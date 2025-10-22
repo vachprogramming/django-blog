@@ -1,0 +1,29 @@
+# This file tells Git what *not* to track.
+
+# Python
+###################
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual Environments - This is the most important rule!
+# We specify the exact path to our venv
+backend/venv/
+
+# Secrets
+# We will create this .env file soon for our database password.
+# We must never commit it.
+backend/.env
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+
+# OS-specific files
+###################
+# Windows
+Thumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
