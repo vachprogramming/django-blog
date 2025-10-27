@@ -1,24 +1,22 @@
 
-// Import the Outlet component from React Router
 import { Outlet } from 'react-router-dom';
 import styles from './App.module.css';
+
+// 1. Import our new Navbar component
+import Navbar from './components/Navbar'; 
 
 function App() {
   return (
     <div className={styles.appContainer}>
-      {/* We'll put our real Navbar here soon */}
-      <div className={styles.navbarPlaceholder}>
-        My Navigation Bar
-      </div>
 
-      {/* This is the main content area */}
+      {/* 2. Replace the placeholder div with our component */}
+      <Navbar /> 
+
       <main className={styles.mainContent}>
-        {/* The <Outlet> is where our pages (HomePage, etc.)
-            will be injected by React Router. */}
         <Outlet />
       </main>
 
-      {/* We'll put a real Footer here later */}
+      {/* We'll leave the footer placeholder for now */}
       <div className={styles.footerPlaceholder}>
         © 2025 StudyConnect
       </div>
