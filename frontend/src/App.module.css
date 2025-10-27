@@ -1,0 +1,31 @@
+
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.navbarPlaceholder {
+  width: 100%;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+.mainContent {
+  flex: 1; /* This makes the main area grow to fill available space */
+  width: 100%;
+  max-width: 1280px; /* A standard max-width for content */
+  margin: 0 auto; /* This centers the content */
+  padding: 1rem;
+}
+
+.footerPlaceholder {
+  width: 100%;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.875rem;
+}
