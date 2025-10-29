@@ -1,0 +1,16 @@
+
+/* --- Mobile Styles (Default) --- */
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Space between cards on mobile */
+}
+
+@media (min-width: 768px) {
+  .gridContainer {
+    display: grid;
+    /* Create 3 equal-width columns */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 1.5rem;
+  }
+}
