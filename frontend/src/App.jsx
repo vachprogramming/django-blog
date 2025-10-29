@@ -15,8 +15,7 @@ function App() {
       <main className={styles.mainContent}>
         <Outlet />
       </main>
-
-      {/* 2. Replace the placeholder div with our component */}
+      
       <Footer /> 
 
     </div>
