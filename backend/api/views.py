@@ -8,6 +8,9 @@ from .serializers import (
     StudyGroupSerializer
 )
 
+from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -75,6 +78,58 @@ class RegisterView(APIView):
             return Response(
                 {"error": str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+
+class LoginView(APIView):
+    """
+    A simple, custom API endpoint for user login.
+    Returns an auth token.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        # We'll try to get 'email' first, but fall back to 'username'
+        # This makes our endpoint more flexible
+        identifier = request.data.get('email') or request.data.get('username')
+        password = request.data.get('password')
+
+        if not identifier or not password:
+            return Response(
+                {"error": "Please provide both email/username and password."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # We need to find the user by email
+        try:
+            # Find the user by their email
+            user_by_email = User.objects.get(email=identifier)
+            # Then get their actual username
+            username = user_by_email.username
+        except User.DoesNotExist:
+            # If not found by email, maybe they sent their username
+            username = identifier
+
+        # 'authenticate' is Django's built-in way to check
+        # a username and password.
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # Login was successful
+            # 'get_or_create' finds the user's token,
+            # or creates a new one if it doesn't exist.
+            token, created = Token.objects.get_or_create(user=user)
+
+            return Response(
+                # We send back the token "key"
+                {"token": token.key},
+                status=status.HTTP_200_OK
+            )
+        else:
+            # Login failed
+            return Response(
+                {"error": "Invalid Credentials. Please try again."},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
 
