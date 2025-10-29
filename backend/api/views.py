@@ -8,6 +8,76 @@ from .serializers import (
     StudyGroupSerializer
 )
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from .serializers import UserSerializer 
+
+class RegisterView(APIView):
+    """
+    A simple, custom API endpoint for creating a new user.
+    """
+    # 'permission_classes' set to 'AllowAny' means
+    # any user (even unauthenticated) can access this endpoint.
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        # Get the data from the request
+        username = request.data.get('username')
+        email = request.data.get('email')
+        password = request.data.get('password')
+        password2 = request.data.get('password2')
+
+        # --- 1. Simple Validation ---
+        if not all([username, email, password, password2]):
+            return Response(
+                {"error": "All fields are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if password != password2:
+            return Response(
+                {"error": "Passwords do not match."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # --- 2. Check for existing user ---
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already exists."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {"error": "Email already exists."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # --- 3. Create the User ---
+        # We use 'create_user' to ensure the password
+        # is properly hashed (secured).
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=password
+            )
+
+            # We can return the new user's data
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            # Catch any other unexpected errors
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
 class UniversityViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows universities to be viewed or edited.

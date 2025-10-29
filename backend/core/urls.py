@@ -21,4 +21,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include('api.urls')),
+
+    # This includes all the auth endpoints (login, logout, etc.)
+    path('api/auth/', include('dj_rest_auth.urls')),
+    # This includes the registration endpoint
+    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 ]
