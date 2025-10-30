@@ -14,16 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# studyconnect/backend/core/urls.py
+
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    # This is the path for the Django admin
     path('admin/', admin.site.urls),
 
+    # This is the path for our own API
+    # It includes 'api/register/', 'api/login/', 'api/google-login/', etc.
     path('api/', include('api.urls')),
-
-    # This includes all the auth endpoints (login, logout, etc.)
-    path('api/auth/', include('dj_rest_auth.urls')),
-    # This includes the registration endpoint
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
 ]

@@ -1,0 +1,25 @@
+/* studyconnect/frontend/src/pages/LoginPage.module.css */
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #6b7280;
+  margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.divider span {
+  padding: 0 1rem;
+}
+
+.googleButtonContainer {
+  display: flex;
+  justify-content: center;
+}

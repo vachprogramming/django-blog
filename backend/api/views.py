@@ -1,3 +1,4 @@
+import os
 from rest_framework import viewsets, permissions
 from .models import University, Profile, StudyGroup
 from django.contrib.auth.models import User
@@ -17,6 +18,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from .serializers import UserSerializer 
+
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 class RegisterView(APIView):
     """
@@ -172,3 +176,73 @@ class StudyGroupViewSet(viewsets.ModelViewSet):
         # When a new group is created, set the creator
         # to the currently logged-in user.
         serializer.save(creator=self.request.user)
+
+
+class GoogleLoginView(APIView):
+    """
+    Custom view for Google login.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        # Get the token from the frontend
+        token = request.data.get('token')
+        if not token:
+            return Response(
+                {"error": "No token provided"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get our Client ID from the .env file
+        CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+        if not CLIENT_ID:
+            return Response(
+                {"error": "Server configuration error"}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        try:
+            # 1. Verify the token with Google's servers
+            idinfo = id_token.verify_oauth2_token(
+                token, 
+                requests.Request(), 
+                CLIENT_ID
+            )
+
+            # 2. Get user info from the verified token
+            email = idinfo['email']
+            username = idinfo.get('name', email.split('@')[0])
+
+            # 3. Find or create a user in our database
+            try:
+                # User already exists
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                # New user - create them
+                # We create a random, unusable password
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=None # No password, they use Google
+                )
+
+            # 4. Get or create our *own* auth token
+            app_token, created = Token.objects.get_or_create(user=user)
+
+            # 5. Send our token back to the frontend
+            return Response(
+                {"token": app_token.key},
+                status=status.HTTP_200_OK
+            )
+
+        except ValueError as e:
+            # This happens if the token is invalid
+            return Response(
+                {"error": "Invalid token"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

@@ -42,18 +42,12 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
 ]
 
 THIRD_PARTY_APPS = [
     'rest_framework',        # Django REST Framework
     'corsheaders',
     'rest_framework.authtoken',
-    'dj_rest_auth',             
-    'allauth',                  
-    'allauth.account',          
-    'dj_rest_auth.registration',
-    'allauth.socialaccount',
 ]
 
 LOCAL_APPS = [
@@ -69,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    # 'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -149,18 +143,3 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # The origin for our React app
 ]
 
-# Required by django-allauth
-SITE_ID = 1
-
-# This tells allauth to use email for login, which is modern.
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none' # We'll keep it simple for now
-
-# This tells DRF to use Token authentication
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-}

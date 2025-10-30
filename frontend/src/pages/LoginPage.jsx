@@ -1,14 +1,13 @@
-
-// 1. Import 'useContext'
-import { useState, useContext } from 'react'; 
+import { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 
-// 2. Import our AuthContext
-import AuthContext from '../context/AuthContext'; 
-
+// Import our shared styles
 import pageStyles from './Page.module.css';
 import formStyles from './Form.module.css';
+import loginStyles from './LoginPage.module.css'; // We created this
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,10 +15,9 @@ function LoginPage() {
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
-  
-  // 3. Get the 'login' function from our global context
   const { login } = useContext(AuthContext); 
 
+  // This is our email/password login handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -33,15 +31,8 @@ function LoginPage() {
         }
       );
       
-      // 4. If successful, our API sends back a "token"
-      //    e.g., response.data = { token: "..." }
       const token = response.data.token;
-      
-      // 5. THIS IS THE MAGIC:
-      //    We call our global 'login' function with the token
       login(token);
-      
-      // 6. Now we can redirect to the home page
       navigate('/'); 
       
     } catch (err) {
@@ -54,13 +45,40 @@ function LoginPage() {
     }
   };
 
-  // ... (the rest of the file, the 'return' with the form, is identical) ...
+  // This is our Google login handler
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError(null);
+    const googleToken = credentialResponse.credential;
+
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/google-login/',
+        { token: googleToken }
+      );
+      
+      const appToken = response.data.token;
+      login(appToken);
+      navigate('/');
+      
+    } catch (err) {
+      console.error('Google login error:', err);
+      setError('Google login failed. Please try again.');
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error('Google login failed');
+    setError('Google login failed. Please try again.');
+  };
+
   return (
     <div className={pageStyles.container}>
       <form className={formStyles.form} onSubmit={handleSubmit}>
         <h1 className={pageStyles.title}>Login to Your Account</h1>
         
         {error && <p className={formStyles.error}>{error}</p>}
+        
+        {/* --- HERE ARE THE MISSING FIELDS --- */}
         
         <div className={formStyles.formGroup}>
           <label htmlFor="email">Email</label>
@@ -84,9 +102,24 @@ function LoginPage() {
           />
         </div>
         
+        {/* --- END OF MISSING FIELDS --- */}
+
         <button type="submit" className={formStyles.submitButton}>
           Login
         </button>
+        
+        <div className={loginStyles.divider}>
+          <span>OR</span>
+        </div>
+        
+        <div className={loginStyles.googleButtonContainer}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            useOneTap
+          />
+        </div>
+        
       </form>
     </div>
   );
