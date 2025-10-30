@@ -32,3 +32,29 @@
 .navLink:hover {
   color: #1d4ed8; /* A nice blue for hover */
 }
+
+/* ... (all your existing styles .navbar, .logo, etc.) ... */
+
+.navLink:hover {
+  color: #1d4ed8; /* A nice blue for hover */
+}
+
+.navLinkButton {
+  /* This makes it look exactly like our .navLink */
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+  
+  /* This removes all default button styles */
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit; /* Ensures it uses the same font */
+}
+
+.navLinkButton:hover {
+  color: #1d4ed8;
+}
