@@ -11,6 +11,7 @@ from .serializers import (
 
 from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
+from rest_framework import permissions
 
 
 from rest_framework.views import APIView
@@ -246,3 +247,12 @@ class GoogleLoginView(APIView):
                 {"error": str(e)}, 
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+        
+class UserDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        # 'request.user' is automatically populated by Django
+        # because of the TokenAuthentication
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
