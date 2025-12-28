@@ -1,10 +1,7 @@
 <p align="center">
-  <h1 align="center">📚 StudyConnect</h1>
+  <h1 align="center">📚Blog</h1>
   <p align="center">
-    <strong>Find your study tribe. Ace your exams together.</strong>
-  </p>
-  <p align="center">
-    A full-stack web application for university students to create, discover, and join study groups.
+    A full-stack blog application with user authentication, post management, commenting, search, and pagination. Built to demonstrate core web application features and clean CRUD workflows..
   </p>
 </p>
 
@@ -13,10 +10,8 @@
 ## ✨ Features
 
 -   **🔐 Secure Authentication:** User registration and login with Google OAuth integration.
--   **🏫 University-Specific Groups:** Filter and find study groups associated with your university (e.g., TUM, LMU).
--   **📝 Create & Manage Groups:** Start your own study group for a specific course, set a meeting time and location.
--   **🤝 Join Groups:** Browse available groups and join with a single click.
--   **🧑‍💼 User Profiles:** View your created and joined study groups on your personal profile page.
+-   **🏫 Blog Posts (CRUD):** Create, read, update, and delete posts.
+-   **🏫 Search:** Simple search to find the relevant post
 
 ---
 
